@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="en">
+
+<head>
+    <meta charset="UTF-8"> <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/uikit.css">
+</head>
+
+<body class="uk-background-dark uk-padding uk-height-expand">
+    
+    <h1> hello world </h1>
+    <p></p>
+
+    <script>
+    (()=>{
+
+        var cli = new WebSocket( window.location.origin.replace("https","wss") );
+        var gyr = new AbsoluteOrientationSensor({ frequency: 60 });
+        var obj = new Object();
+
+        setInterval(()=>{
+        if( cli.readyState === WebSocket.CLOSED ){ return; }
+            cli.send( JSON.stringify( obj ) );
+        },60);
+
+        gyr.addEventListener( "reading", (ev)=>{
+        if( cli.readyState === WebSocket.CLOSED ){ return; }
+            obj.y = gyr.quaternion[0].toFixed(6);
+            obj.x = gyr.quaternion[1].toFixed(6);
+            obj.z = gyr.quaternion[2].toFixed(6);
+            obj.w = gyr.quaternion[3].toFixed(6);
+        });
+
+        gyr.start();
+
+    })();
+    </script>
+
+</body>
+
+</html>
